@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "./componets/Card";
 import { useState } from "react";
 
 function App() {
@@ -6,14 +7,13 @@ function App() {
   const [todos, setTodos] = useState([]);
 
   function addTodos() {
-    // if (task.trim()) return;
+    // if (task) return;
     const newTodos = {
       id: Date.now(),
       todo: task,
       completed: false,
     };
-    setTodos({ ...todos, newTodos });
-    console.log(todos);
+    setTodos((todo) => [...todo, newTodos]);
     setTask("");
   }
 
@@ -28,6 +28,14 @@ function App() {
         }}
       />
       <button onClick={addTodos}>Add</button>
+
+      {todos.map((todo, idx) => {
+        return (
+          <div key={todo.id}>
+            <p>{todo.todo}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
