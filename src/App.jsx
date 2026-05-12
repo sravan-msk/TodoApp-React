@@ -17,6 +17,10 @@ function App() {
     setTask("");
   }
 
+  function delHandler(id) {
+    setTodos((todos) => todos.filter((t) => t.id != id));
+  }
+
   return (
     <div>
       <input
@@ -29,10 +33,19 @@ function App() {
       />
       <button onClick={addTodos}>Add</button>
 
-      {todos.map((todo, idx) => {
+      {/* Displaying the Todos */}
+
+      {todos.map((todo) => {
         return (
           <div key={todo.id}>
             <p>{todo.todo}</p>
+            <button
+              onClick={() => {
+                delHandler(todo.id);
+              }}
+            >
+              Del
+            </button>
           </div>
         );
       })}
