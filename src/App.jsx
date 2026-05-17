@@ -23,11 +23,11 @@ function App() {
     setTask("");
   }
 
-  function delTodo(id) {
+  function deleteTodo(id) {
     setTodos(todos.filter((todo) => todo.id != id));
   }
 
-  function toggle(id) {
+  function toggleTodo(id) {
     setTodos(
       todos.map((todo) =>
         todo.id == id ? { ...todo, completed: !todo.completed } : todo,
@@ -44,8 +44,14 @@ function App() {
     setEditText(todo.text);
   }
 
-  function saveEdit(id){
-    setTodos(todos.map((todo)=> todo.id == editId ? {...todo,text:editText}:todo));
+  function updateTodo(id) {
+    if (!editText.trim()) return;
+
+    setTodos(
+      todos.map((todo) =>
+        todo.id == editId ? { ...todo, text: editText } : todo,
+      ),
+    );
     setEditText("");
     setEditId(null);
   }
@@ -54,46 +60,39 @@ function App() {
     <div>
       <input
         type="text"
-        value={task}
+        value={editId === null ? task : editText}
         onChange={(e) => {
-          setTask(e.target.value);
+          editId === null
+            ? setTask(e.target.value)
+            : setEditText(e.target.value);
         }}
         required
       />
-      <button onClick={addTodos}>Add todo</button>
+      {editId !== null ? (
+        <button
+          onClick={() => {
+            updateTodo(editId);
+          }}
+        >
+          update
+        </button>
+      ) : (
+        <button onClick={addTodos}>Add todo</button>
+      )}
 
       <ul className="todo-list">
         {todos.map((todo) => (
           <li key={todo.id} className="todo-item">
-            {editId === todo.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
+            <span
+              className={todo.completed ? "completed" : ""}
+              onClick={() => toggleTodo(todo.id)}
+            >
+              {todo.text}
+            </span>
 
-                <button onClick={() => saveEdit(todo.id)}>Save</button>
-              </>
-            ) : (
-              <>
-                <span
-                  className={todo.completed ? "completed" : ""}
-                  onClick={() => toggleTodo(todo.id)}
-                >
-                  {todo.text}
-                </span>
+            <button onClick={() => editTodo(todo)}>Edit</button>
 
-                <button onClick={() => editTodo(todo)}>Edit</button>
-
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteTodo(todo.id)}
-                >
-                  Delete
-                </button>
-              </>
-            )}
+            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
           </li>
         ))}
       </ul>
