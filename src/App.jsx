@@ -1,20 +1,17 @@
 import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
   const [task, setTask] = useState("");
-
-  // Load todos only once
   const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem("todos");
-    return savedTodos ? JSON.parse(savedTodos) : [];
+    const saveTodos = localStorage.getItem("todos");
+    return saveTodos ? JSON.parse(saveTodos) : [];
   });
-
-  // Auto-save whenever todos change
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
-  function addTodo() {
+  function addTodos() {
     if (!task.trim()) return;
 
     const newTodo = {
@@ -22,9 +19,35 @@ function App() {
       text: task,
       completed: false,
     };
-
     setTodos((prevTodos) => [...prevTodos, newTodo]);
     setTask("");
+  }
+
+  function delTodo(id) {
+    setTodos(todos.filter((todo) => todo.id != id));
+  }
+
+  function toggle(id) {
+    setTodos(
+      todos.map((todo) =>
+        todo.id == id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  }
+
+  //usestate for edit
+  const [editId, setEditId] = useState(null);
+  const [editText, setEditText] = useState("");
+
+  function editTodo(todo) {
+    setEditId(todo.id);
+    setEditText(todo.text);
+  }
+
+  function saveEdit(id){
+    setTodos(todos.map((todo)=> todo.id == editId ? {...todo,text:editText}:todo));
+    setEditText("");
+    setEditId(null);
   }
 
   return (
@@ -32,15 +55,46 @@ function App() {
       <input
         type="text"
         value={task}
-        onChange={(e) => setTask(e.target.value)}
-        placeholder="Enter task"
+        onChange={(e) => {
+          setTask(e.target.value);
+        }}
+        required
       />
+      <button onClick={addTodos}>Add todo</button>
 
-      <button onClick={addTodo}>Add</button>
-
-      <ul>
+      <ul className="todo-list">
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.text}</li>
+          <li key={todo.id} className="todo-item">
+            {editId === todo.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                />
+
+                <button onClick={() => saveEdit(todo.id)}>Save</button>
+              </>
+            ) : (
+              <>
+                <span
+                  className={todo.completed ? "completed" : ""}
+                  onClick={() => toggleTodo(todo.id)}
+                >
+                  {todo.text}
+                </span>
+
+                <button onClick={() => editTodo(todo)}>Edit</button>
+
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteTodo(todo.id)}
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </li>
         ))}
       </ul>
     </div>
