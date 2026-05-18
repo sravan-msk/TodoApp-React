@@ -57,45 +57,53 @@ function App() {
   }
 
   return (
-    <div>
-      <input
-        type="text"
-        value={editId === null ? task : editText}
-        onChange={(e) => {
-          editId === null
-            ? setTask(e.target.value)
-            : setEditText(e.target.value);
-        }}
-        required
-      />
-      {editId !== null ? (
-        <button
-          onClick={() => {
-            updateTodo(editId);
+    <div className="container">
+      <div className="input-container">
+      <h3>Todo App</h3>
+        <div>
+          <input
+          type="text"
+          value={editId === null ? task : editText}
+          onChange={(e) => {
+            editId === null
+              ? setTask(e.target.value)
+              : setEditText(e.target.value);
           }}
-        >
-          update
-        </button>
-      ) : (
-        <button onClick={addTodos}>Add todo</button>
-      )}
+          required
+        />
+        {editId !== null ? (
+          <button
+            onClick={() => {
+              updateTodo(editId);
+            }}
+          >
+            update
+          </button>
+        ) : (
+          <button onClick={addTodos}>Add</button>
+        )}
+        </div>
+      </div>
+      <div className="list-container">
+        <ul className="todo-list">
+          {todos.map((todo) => (
+            <li key={todo.id} className="todo-item">
+              <span
+                className={todo.completed ? "completed" : ""}
+                onClick={() => toggleTodo(todo.id)}
+              >
+                {todo.text}
+              </span>
 
-      <ul className="todo-list">
-        {todos.map((todo) => (
-          <li key={todo.id} className="todo-item">
-            <span
-              className={todo.completed ? "completed" : ""}
-              onClick={() => toggleTodo(todo.id)}
-            >
-              {todo.text}
-            </span>
+              <div>
+                <button onClick={() => editTodo(todo)}><i class="fa-solid fa-pen-to-square"></i></button>
 
-            <button onClick={() => editTodo(todo)}>Edit</button>
-
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+                <button onClick={() => deleteTodo(todo.id)}><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
