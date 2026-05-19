@@ -60,9 +60,9 @@ function App() {
     <div className="container">
       <div className="input-container">
       <h3>Todo App</h3>
-        <div>
+        <div className="box">
           <input
-          type="text"
+          type="text" placeholder="Add todo.."
           value={editId === null ? task : editText}
           onChange={(e) => {
             editId === null
@@ -76,11 +76,11 @@ function App() {
             onClick={() => {
               updateTodo(editId);
             }}
-          >
+           className="btn">
             update
           </button>
         ) : (
-          <button onClick={addTodos}>Add</button>
+          <button onClick={addTodos} className="btn">Add</button>
         )}
         </div>
       </div>
